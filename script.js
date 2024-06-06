@@ -1,8 +1,17 @@
+// Variáveis
 const apiUrl = "https://tmdb-proxy.cubos-academy.workers.dev/3/discover/movie?language=pt-BR&include_adult=false";
 
 let paginaAtual = 1;
 let movies = [];
 const filmesPorPagina = 5;
+
+const highlightC = document.querySelector('.highlight');
+const highlightVideoLink = highlightC.querySelector('.highlight__video-link');
+const highlightTitulo = highlightC.querySelector('.highlight__title');
+const highlightAvaliacao = highlightC.querySelector('.highlight__rating');
+const highlightGenero = highlightC.querySelector('.highlight__genres');
+const highlightLancamento = highlightC.querySelector('.highlight__launch');
+const highlightDescricao = highlightC.querySelector('.highlight__description');
 
 // Visualização de filmes
 document.addEventListener("DOMContentLoaded", async () => {
@@ -80,3 +89,24 @@ input.addEventListener('keyup', async (event) => {
         console.log(error);
     }
 });
+
+// "Filme do dia"
+const exibirFilmeDestaque = async () => {
+    try {
+        const filmeId = movies[Math.floor(Math.random() * movies.length)].id;
+        const result = await axios.get(`https://tmdb-proxy.cubos-academy.workers.dev/3/movie/${filmeId}?language=pt-BR`);
+        const filme = result.data;
+
+        highlightVideoLink.href = `https://www.youtube.com/results?search_query=${filme.title} Trailer`;
+        highlightTitulo.textContent = filme.title;
+        highlightAvaliacao.innerHTML = `<img src="./assets/estrela.svg" alt="Estrela"> ${filme.vote_average.toFixed(1)}`;
+        highlightGenero.textContent = filme.genres.map(genre => genre.name).join(', ');
+        highlightLancamento.textContent = new Date(filme.release_date).getFullYear();
+        highlightDescricao.textContent = filme.overview;
+
+        const highlightVideo = document.querySelector('.highlight__video');
+        highlightVideo.style.backgroundImage = `url(https://image.tmdb.org/t/p/original${filme.backdrop_path})`;
+    } catch { error } {
+        console.log(error);
+    }
+};
