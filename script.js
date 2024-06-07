@@ -13,6 +13,9 @@ const highlightGenero = highlightC.querySelector('.highlight__genres');
 const highlightLancamento = highlightC.querySelector('.highlight__launch');
 const highlightDescricao = highlightC.querySelector('.highlight__description');
 
+const modal = document.querySelector('.modal');
+const modalFechado = document.querySelector('.modal__close');
+
 // Visualização de filmes
 document.addEventListener("DOMContentLoaded", async () => {
     try {
@@ -110,3 +113,44 @@ const exibirFilmeDestaque = async () => {
         console.log(error);
     }
 };
+
+
+// Modal de filme
+const exibirDetalhesDoFilme = async (filmeId) => {
+    try {
+        const result = await axios.get(`https://tmdb-proxy.cubos-academy.workers.dev/3/movie/${filmeId}?language=pt-BR`);
+        const filme = result.data;
+
+        modal.querySelector('.modal__title').textContent = filme.title;
+        modal.querySelector('.modal__img').src = `https://image.tmdb.org/t/p/original${filme.poster_path}`;
+        modal.querySelector('.modal__description').textContent = filme.overview;
+
+        const modalGeneros = modal.querySelector('.modal__genres');
+        modalGeneros.innerHTML = '';
+        filme.genres.forEach(genre => {
+            const elementoGenre = document.createElement('span');
+            elementoGenre.classList.add('modal__genre');
+            elementoGenre.textContent = genre.name;
+            modalGeneros.appendChild(elementoGenre);
+        });
+
+        modal.querySelector('.modal__average').textContent = filme.vote_average.toFixed(1);
+
+        modal.classList.remove('hidden');
+        modal.classList.add('show');
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+document.addEventListener('click', (event) => {
+    if (event.target.closest('.movie')) {
+        const filmeId = event.target.closest('.movie').dataset.id;
+        exibirDetalhesDoFilme(filmeId);
+    }
+});
+
+modalFechado.addEventListener('click', () => {
+    modal.classList.add('hidden');
+    modal.classList.remove('show');
+});
