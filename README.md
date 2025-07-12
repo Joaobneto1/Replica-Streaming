@@ -60,12 +60,6 @@ Exibe o destaque do dia com:
 
 ---
 
-### 🌗 Modo Dark/Light
-- Alteração visual com clique no botão de tema
-- Implementado via manipulação de variáveis CSS
-
----
-
 ## 🧠 Conhecimentos aplicados
 
 - HTML semântico
